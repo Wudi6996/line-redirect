@@ -1,143 +1,78 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>联系客服</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    background: #f7f7f7;
-    text-align: center;
-    padding: 20px;
-  }
-  h1 { color: #333; margin-bottom: 20px; font-size: 24px; }
-  p { color: #666; margin-bottom: 30px; font-size: 16px; }
-  .tiktok-warning { color: red; font-weight: bold; margin-bottom: 20px; display: none; }
-  .line-button {
-    padding: 12px 25px;
-    font-size: 18px;
-    color: white;
-    background-color: #00c300;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 5px;
-    display: inline-block;
-  }
-  .line-button:hover { background-color: #009900; }
+  body { font-family: Arial, sans-serif; text-align: center; background:#f7f7f7; margin:0; padding:0; color:#333; }
+  header { background:#4CAF50; color:#fff; padding:15px 0; font-size:1.5rem; }
+  .tip { margin:15px auto; font-size:1rem; max-width:500px; line-height:1.4; }
+  .buttons { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; padding:20px; }
+  .buttons button { background:#4CAF50; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-size:1rem; cursor:pointer; transition:background 0.3s; }
+  .buttons button:hover { background:#45a049; }
+  .hidden { display:none; }
 </style>
 </head>
 <body>
-<h1 id="title">点击下方按钮联系客服</h1>
-<p id="message">如果无法跳转，请点击右上角在浏览器中打开本页面</p>
-<p id="tiktokWarning" class="tiktok-warning">检测到 TikTok 内置浏览器，请在浏览器中打开本页面以顺利跳转 LINE</p>
-
-<div id="lineButtonsContainer"></div>
+<header id="pageTitle">联系客服</header>
+<p id="instruction" class="tip">点击下方按钮联系客服</p>
+<p id="tiktokTip" class="tip hidden">如果无法跳转，请点击右上角在浏览器中打开本页面</p>
+<div id="buttons" class="buttons"></div>
 
 <script>
-  // =======================
-  // 页面文字多语言
-  // =======================
-  const messages = {
-    zh: { title: "点击下方按钮联系客服", message: "如果无法跳转，请点击右上角在浏览器中打开本页面", tiktok: "检测到 TikTok 内置浏览器，请在浏览器中打开本页面以顺利跳转 LINE" },
-    ja: { title: "下のボタンをクリックしてカスタマーサポートに連絡してください", message: "ブラウザで開けない場合は、右上でブラウザを開いてください", tiktok: "TikTok内蔵ブラウザを検出しました。ブラウザで開いてLINEに移動してください" },
-    en: { title: "Click the button below to contact customer service", message: "If it doesn't work, please open this page in your browser", tiktok: "TikTok browser detected. Please open this page in your browser to reach LINE" },
-    pt: { title: "Clique no botão abaixo para contatar o suporte", message: "Se não funcionar, abra esta página no navegador", tiktok: "Navegador TikTok detectado. Abra esta página no navegador para acessar o LINE" },
-    es: { title: "Haga clic en el botón a continuación para contactar con atención al cliente", message: "Si no funciona, abra esta página en su navegador", tiktok: "Navegador TikTok detectado. Abra esta página en su navegador para acceder a LINE" },
-    fr: { title: "Cliquez sur le bouton ci-dessous pour contacter le support", message: "Si cela ne fonctionne pas, ouvrez cette page dans votre navigateur", tiktok: "Navigateur TikTok détecté. Ouvrez cette page dans votre navigateur pour accéder à LINE" },
-    de: { title: "Klicken Sie auf die Schaltfläche unten, um den Kundendienst zu kontaktieren", message: "Wenn es nicht funktioniert, öffnen Sie diese Seite in Ihrem Browser", tiktok: "TikTok-Browser erkannt. Öffnen Sie diese Seite in Ihrem Browser, um LINE zu erreichen" },
-    ko: { title: "아래 버튼을 클릭하여 고객센터에 연락하세요", message: "작동하지 않으면 브라우저에서 이 페이지를 열어주세요", tiktok: "TikTok 내장 브라우저가 감지되었습니다. 브라우저에서 열어 LINE에 접속하세요" },
-    it: { title: "Clicca il pulsante qui sotto per contattare il servizio clienti", message: "Se non funziona, apri questa pagina nel browser", tiktok: "Rilevato browser TikTok. Apri questa pagina nel browser per accedere a LINE" },
-    ru: { title: "Нажмите кнопку ниже, чтобы связаться со службой поддержки", message: "Если не работает, откройте эту страницу в браузере", tiktok: "Обнаружен браузер TikTok. Откройте эту страницу в браузере, чтобы перейти в LINE" },
-    hi: { title: "नीचे दिए गए बटन पर क्लिक करके ग्राहक सेवा से संपर्क करें", message: "यदि यह काम नहीं करता है, तो इस पेज को ब्राउज़र में खोलें", tiktok: "TikTok ब्राउज़र का पता चला। LINE तक पहुँचने के लिए इस पेज को ब्राउज़र में खोलें" },
-    ar: { title: "اضغط على الزر أدناه للتواصل مع خدمة العملاء", message: "إذا لم يعمل، يرجى فتح هذه الصفحة في المتصفح", tiktok: "تم اكتشاف متصفح TikTok. يرجى فتح هذه الصفحة في المتصفح للوصول إلى LINE" }
-  };
+// 多语言配置
+const translations = {
+  zh: { title:"联系客服", instruction:"点击下方按钮联系客服", tiktokTip:"如果无法跳转，请点击右上角在浏览器中打开本页面", buttonLabel:(n)=>`${n}号客服` },
+  en: { title:"Contact Service", instruction:"Click a button below to contact service", tiktokTip:"If it doesn't open, please tap top-right menu and choose 'Open in browser'.", buttonLabel:(n)=>`CS ${n}` },
+  ja: { title:"カスタマーサポートへ連絡", instruction:"下のボタンをクリックしてカスタマーサポートに連絡", tiktokTip:"開けない場合は右上のメニューからブラウザで開いてください。", buttonLabel:(n)=>`${n}号カスタマー` },
+  ko: { title:"고객센터 문의", instruction:"아래 버튼을 눌러 고객센터에 문의하세요", tiktokTip:"열리지 않으면 오른쪽 상단 메뉴에서 브라우저로 열기를 선택하세요.", buttonLabel:(n)=>`${n}번 고객센터` },
+  pt: { title:"Atendimento ao Cliente", instruction:"Clique no botão abaixo para falar com o atendimento", tiktokTip:"Se não abrir, toque no menu no canto superior direito e escolha 'Abrir no navegador'.", buttonLabel:(n)=>`Atendimento ${n}` },
+  fr: { title:"Contacter le service client", instruction:"Cliquez sur un bouton ci-dessous pour contacter le service", tiktokTip:"S’il ne s’ouvre pas, cliquez sur le menu en haut à droite et choisissez « Ouvrir dans le navigateur ».", buttonLabel:(n)=>`Service ${n}` }
+};
 
-  const lang = (navigator.language || navigator.userLanguage).slice(0,2);
-  const msg = messages[lang] || messages["zh"];
-  document.getElementById("title").innerText = msg.title;
-  document.getElementById("message").innerText = msg.message;
-  document.getElementById("tiktokWarning").innerText = msg.tiktok;
+const userLang = (navigator.language||"en").slice(0,2);
+const lang = translations[userLang]?userLang:"en";
 
-  // TikTok 内置浏览器检测
-  if(/TikTok/i.test(navigator.userAgent)){
-    document.getElementById("tiktokWarning").style.display = "block";
+document.getElementById("pageTitle").innerText = translations[lang].title;
+document.getElementById("instruction").innerText = translations[lang].instruction;
+document.getElementById("tiktokTip").innerText = translations[lang].tiktokTip;
+
+// TikTok 内置浏览器提示
+if(/tiktok/i.test(navigator.userAgent)){ document.getElementById("tiktokTip").classList.remove("hidden"); }
+
+// 10个客户 × 每个客户15个客服槽位，默认空
+const customers = {};
+for(let c=1;c<=10;c++){
+  customers[c] = Array(15).fill("").map((_,i)=>({url:""}));
+}
+
+// 示例填充客服账号（可删除或修改）
+customers["1"][0].url="https://line.me/ti/p/AAAA1111";
+customers["1"][1].url="https://line.me/ti/p/AAAA2222";
+customers["2"][0].url="https://line.me/ti/p/BBBB1111";
+
+// 获取 URL 参数 ?c=客户编号
+const params = new URLSearchParams(window.location.search);
+const customerId = params.get("c") || "1";
+const accounts = customers[customerId] || [];
+
+// 渲染按钮（只显示有URL的）
+const btnContainer=document.getElementById("buttons");
+accounts.forEach((acc,index)=>{
+  if(acc.url){
+    const btn=document.createElement("button");
+    btn.innerText=translations[lang].buttonLabel(index+1);
+    btn.onclick=()=>window.location.href=acc.url;
+    btnContainer.appendChild(btn);
   }
+});
 
-  // =======================
-  // 30 个账号槽位，URL 留空不显示
-  // =======================
-  const lineAccounts = [
-    { url: "https://line.me/ti/p/BkkXAMg2Uy" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" },
-    { url: "" }
-  ];
-
-  const container = document.getElementById("lineButtonsContainer");
-
-  lineAccounts.forEach((account, index) => {
-    if(account.url){ // URL 不为空才生成按钮
-      const a = document.createElement("a");
-      a.href = account.url;
-      a.target = "_blank";
-      const btn = document.createElement("button");
-
-      // 按钮文字多语言
-      const btnTextMap = {
-        zh: `${index+1}号客服`,
-        ja: `${index+1}号カスタマー`,
-        en: `CS ${index+1}`,
-        pt: `${index+1} CS`,
-        es: `${index+1} CS`,
-        fr: `${index+1} CS`,
-        de: `${index+1} CS`,
-        ko: `CS ${index+1}`,
-        it: `CS ${index+1}`,
-        ru: `CS ${index+1}`,
-        hi: `CS ${index+1}`,
-        ar: `CS ${index+1}`
-      };
-
-      btn.innerText = btnTextMap[lang] || btnTextMap["zh"];
-      btn.className = "line-button";
-      a.appendChild(btn);
-      container.appendChild(a);
-    }
-  });
-
+if(btnContainer.children.length===0){
+  const p=document.createElement("p");
+  p.innerText="当前没有客服账号。";
+  btnContainer.appendChild(p);
+}
 </script>
 </body>
 </html>
