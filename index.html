@@ -44,9 +44,6 @@ customers["1"][0].url = "https://line.me/ti/p/BkkXAMg2Uy"; // 客服1
 // 客户2客服账号示例
 customers["2"][0].url = "https://line.me/ti/p/BBBB1111"; // 客服1
 
-// 其他客户按需添加
-// customers["3"][0].url = "https://line.me/ti/p/CCCC1111"; // 客服1
-
 /* =========================
    以下代码无需修改
 ========================= */
@@ -82,7 +79,11 @@ accounts.forEach((acc,index)=>{
   if(acc.url){
     const btn=document.createElement("button");
     btn.innerText=translations[lang].buttonLabel(index+1);
-    btn.onclick=()=>window.location.href=acc.url;
+    // 防缓存：每次点击都加时间戳参数
+    btn.onclick = () => {
+      const url = acc.url + (acc.url.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+      window.location.href = url;
+    };
     btnContainer.appendChild(btn);
   }
 });
@@ -95,6 +96,3 @@ if(btnContainer.children.length===0){
 </script>
 </body>
 </html>
-
-
-
