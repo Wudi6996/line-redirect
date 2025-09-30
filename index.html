@@ -11,8 +11,8 @@
   .buttons { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; padding:20px; }
   .buttons button { background:#4CAF50; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-size:1rem; cursor:pointer; transition:background 0.3s; }
   .buttons button:hover { background:#45a049; }
+  #tiktokTip { font-weight:bold; color:red; margin-top:10px; }
   .hidden { display:none; }
-  #tiktokTip { font-weight:bold; color:red; margin-top:10px; } /* TikTok 提示显眼 */
 </style>
 </head>
 <body>
@@ -20,37 +20,26 @@
 <p id="instruction" class="tip">点击下方按钮联系客服</p>
 
 <div id="buttons" class="buttons"></div>
-<p id="tiktokTip" class="tip hidden"></p> <!-- TikTok 提示 -->
+<p id="tiktokTip" class="hidden">如果无法跳转，请点击右上角在浏览器中打开本页面</p>
 
 <script>
 /* =========================
-   客户客服配置区（请在这里修改）
+   客户客服配置区（显眼）
    每个客户最多15个客服槽位
-   示例：
-   customers["1"][0].url = "https://line.me/ti/p/XXXX"; // 客服1
-   未填 URL 的槽位不会显示按钮
 ========================= */
 
 const customers = {};
-
-// 初始化 10 个客户，每个客户15个空槽位
 for(let c=1;c<=10;c++){
   customers[c] = Array(15).fill("").map((_,i)=>({url:""}));
 }
 
-/* ======= 在这里填写客服 URL ======= */
-
-// 客户1客服账号示例
+/* ======= 填写客服 URL ======= */
 customers["1"][0].url = "https://line.me/ti/p/BkkXAMg2Uy"; // 客服1
-
-// 客户2客服账号示例
 customers["2"][0].url = "https://line.me/ti/p/BBBB1111"; // 客服1
-
 /* =========================
    以下代码无需修改
 ========================= */
 
-// 多语言配置
 const translations = {
   zh: { title:"联系客服", instruction:"点击下方按钮联系客服", tiktokTip:"如果无法跳转，请点击右上角在浏览器中打开本页面", buttonLabel:(n)=>`${n}号客服` },
   en: { title:"Contact Service", instruction:"Click a button below to contact service", tiktokTip:"If it doesn't open, please tap top-right menu and choose 'Open in browser'.", buttonLabel:(n)=>`CS ${n}` },
@@ -67,7 +56,7 @@ document.getElementById("pageTitle").innerText = translations[lang].title;
 document.getElementById("instruction").innerText = translations[lang].instruction;
 document.getElementById("tiktokTip").innerText = translations[lang].tiktokTip;
 
-// TikTok 内置浏览器提示
+// TikTok 内置浏览器提示显眼显示
 if(/tiktok/i.test(navigator.userAgent)){
   document.getElementById("tiktokTip").classList.remove("hidden");
 }
