@@ -26,9 +26,7 @@
 
 <div id="buttons" class="buttons"></div>
 <!-- 提示文字始终可见 -->
-<p id="tiktokTip">
-  如果无法跳转，请点击右上角在浏览器中打开本页面
-</p>
+<p id="tiktokTip">如果无法跳转，请点击右上角在浏览器中打开本页面</p>
 
 <script>
 /* =========================
@@ -49,19 +47,52 @@ customers["2"][0].url = "https://line.me/ti/p/BBBB1111"; // 客服1
 ========================= */
 
 const translations = {
-  zh: { title:"联系客服", instruction:"点击下方按钮联系客服", tiktokTip:"如果无法跳转，请点击右上角在浏览器中打开本页面", buttonLabel:(n)=>`${n}号客服` },
-  en: { title:"Contact Service", instruction:"Click a button below to contact service", tiktokTip:"If it doesn't open, please tap top-right menu and choose 'Open in browser'.", buttonLabel:(n)=>`CS ${n}` },
-  ja: { title:"カスタマーサポートへ連絡", instruction:"下のボタンをクリックしてカスタマーサポートに連絡", tiktokTip:"開けない場合は右上のメニューからブラウザで開いてください。", buttonLabel:(n)=>`${n}号カスタマー` },
-  ko: { title:"고객센터 문의", instruction:"아래 버튼을 눌러 고객센터에 문의하세요", tiktokTip:"열리지 않으면 오른쪽 상단 메뉴에서 브라우저로 열기를 선택하세요.", buttonLabel:(n)=>`${n}번 고객센터` },
-  pt: { title:"Atendimento ao Cliente", instruction:"Clique no botão abaixo para falar com o atendimento", tiktokTip:"Se não abrir, toque no menu no canto superior direito e escolha 'Abrir no navegador'.", buttonLabel:(n)=>`Atendimento ${n}` },
-  fr: { title:"Contacter le service client", instruction:"Cliquez sur un bouton ci-dessous pour contacter le service", tiktokTip:"S’il ne s’ouvre pas, cliquez sur le menu en haut à droite et choisissez « Ouvrir dans le navigateur ».", buttonLabel:(n)=>`Service ${n}` }
+  zh: {
+    title:"联系客服",
+    instruction:"点击下方按钮联系客服",
+    tiktokTip:"如果无法跳转，请点击右上角在浏览器中打开本页面",
+    buttonLabel:(n)=>`${n}号客服`
+  },
+  en: {
+    title:"Contact Service",
+    instruction:"Click a button below to contact service",
+    tiktokTip:"If it doesn't open, please tap top-right menu and choose 'Open in browser'.",
+    buttonLabel:(n)=>`CS ${n}`
+  },
+  ja: {
+    title:"カスタマーサポートへ連絡",
+    instruction:"下のボタンをクリックしてカスタマーサポートに連絡",
+    tiktokTip:"開けない場合は右上のメニューからブラウザで開いてください。",
+    buttonLabel:(n)=>`${n}号カスタマー`
+  },
+  ko: {
+    title:"고객센터 문의",
+    instruction:"아래 버튼을 눌러 고객센터에 문의하세요",
+    tiktokTip:"열리지 않으면 오른쪽 상단 메뉴에서 브라우저로 열기를 선택하세요.",
+    buttonLabel:(n)=>`${n}번 고객센터`
+  },
+  pt: {
+    title:"Atendimento ao Cliente",
+    instruction:"Clique no botão abaixo para falar com o atendimento",
+    tiktokTip:"Se não abrir, toque no menu no canto superior direito e escolha 'Abrir no navegador'.",
+    buttonLabel:(n)=>`Atendimento ${n}`
+  },
+  fr: {
+    title:"Contacter le service client",
+    instruction:"Cliquez sur un bouton ci-dessous pour contacter le service",
+    tiktokTip:"S’il ne s’ouvre pas, cliquez sur le menu en haut à droite et choisissez « Ouvrir dans le navigateur ».",
+    buttonLabel:(n)=>`Service ${n}`
+  }
 };
 
+// 自动识别用户语言
 const userLang = (navigator.language||"en").slice(0,2);
-const lang = translations[userLang]?userLang:"en";
+const lang = translations[userLang] ? userLang : "en";
 
+// 更新页面文字，包括提示
 document.getElementById("pageTitle").innerText = translations[lang].title;
 document.getElementById("instruction").innerText = translations[lang].instruction;
+document.getElementById("tiktokTip").innerText = translations[lang].tiktokTip;
 
 // 获取 URL 参数 ?c=客户编号
 const params = new URLSearchParams(window.location.search);
@@ -73,7 +104,7 @@ const btnContainer=document.getElementById("buttons");
 accounts.forEach((acc,index)=>{
   if(acc.url){
     const btn=document.createElement("button");
-    btn.innerText=translations[lang].buttonLabel(index+1);
+    btn.innerText = translations[lang].buttonLabel(index+1);
     // 防缓存：每次点击都加时间戳参数
     btn.onclick = () => {
       const url = acc.url + (acc.url.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
