@@ -12,13 +12,15 @@
   .buttons button { background:#4CAF50; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-size:1rem; cursor:pointer; transition:background 0.3s; }
   .buttons button:hover { background:#45a049; }
   .hidden { display:none; }
+  #tiktokTip { font-weight:bold; color:red; margin-top:10px; } /* TikTok 提示显眼 */
 </style>
 </head>
 <body>
 <header id="pageTitle">联系客服</header>
 <p id="instruction" class="tip">点击下方按钮联系客服</p>
-<p id="tiktokTip" class="tip hidden">如果无法跳转，请点击右上角在浏览器中打开本页面</p>
+
 <div id="buttons" class="buttons"></div>
+<p id="tiktokTip" class="tip hidden"></p> <!-- TikTok 提示 -->
 
 <script>
 /* =========================
@@ -66,7 +68,9 @@ document.getElementById("instruction").innerText = translations[lang].instructio
 document.getElementById("tiktokTip").innerText = translations[lang].tiktokTip;
 
 // TikTok 内置浏览器提示
-if(/tiktok/i.test(navigator.userAgent)){ document.getElementById("tiktokTip").classList.remove("hidden"); }
+if(/tiktok/i.test(navigator.userAgent)){
+  document.getElementById("tiktokTip").classList.remove("hidden");
+}
 
 // 获取 URL 参数 ?c=客户编号
 const params = new URLSearchParams(window.location.search);
